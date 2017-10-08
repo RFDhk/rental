@@ -1,4 +1,4 @@
-package ru.rental.models;
+package ru.rental.model;
 
 import javax.validation.constraints.Size;
 

@@ -10,7 +10,7 @@
 </head>
 <body>
 
- <form:form method="POST" commandName="user" action="/">
+ <form:form method="POST" commandName="user" action="/login">
      <fieldset>
          <form:label path="login">Логин</form:label>
          <form:input path="login"/>
