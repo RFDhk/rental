@@ -9,6 +9,8 @@
 <body>
 <p> Hello, ${user.login}</p>
 <p> Your password is ${user.password}</p>
-
+<form:form method="POST" action="/logout">
+    <input type="submit" value="Выйти"/>
+</form:form>
 </body>
 </html>
