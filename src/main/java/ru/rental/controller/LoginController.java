@@ -1,6 +1,8 @@
 package ru.rental.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,23 +36,20 @@ public class LoginController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String main(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
-        if (!bindingResult.hasErrors() && securityDAO.login(user.getLogin(), user.getPassword())) {
-            return "rental";
-        } else {
-            return "login";
-        }
+        return "rental";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView login(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, ModelAndView modelAndView) {
-        if (!bindingResult.hasErrors()) {
-            if (securityDAO.login(user.getLogin(), user.getPassword())) {
-                modelAndView.setView(redirectView());
-            } else {
-                bindingResult.addError(new ObjectError("user", "Неверный логин или пароль"));
-                modelAndView.setViewName("login");
-            }
+    @RequestMapping(value = "/login", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView login(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, HttpMethod method, ModelAndView modelAndView) {
+        if (method.equals(HttpMethod.GET) || bindingResult.hasErrors()) {
+            modelAndView.setViewName("login");
+            return modelAndView;
+        }
+
+        if (securityDAO.login(user.getLogin(), user.getPassword())) {
+            modelAndView.setView(redirectView("/"));
         } else {
+            bindingResult.addError(new ObjectError("user", "Неверный логин или пароль"));
             modelAndView.setViewName("login");
         }
 
@@ -60,7 +59,7 @@ public class LoginController {
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public ModelAndView logout(SessionStatus sessionStatus, ModelAndView modelAndView) {
         sessionStatus.setComplete();
-        modelAndView.setView(redirectView());
+        modelAndView.setView(redirectView("/login"));
         return modelAndView;
 
     }
@@ -70,8 +69,8 @@ public class LoginController {
         return new User();
     }
 
-    private RedirectView redirectView() {
-        RedirectView redirectView = new RedirectView("/");
+    private RedirectView redirectView(String path) {
+        RedirectView redirectView = new RedirectView(path);
         redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 
         return redirectView;
