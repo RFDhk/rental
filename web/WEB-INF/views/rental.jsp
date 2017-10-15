@@ -7,10 +7,7 @@
     <title>Rental</title>
 </head>
 <body>
-<p> Hello, ${user.login}</p>
-<p> Your password is ${user.password}</p>
-<form:form method="POST" action="/logout">
-    <input type="submit" value="Выйти"/>
-</form:form>
+<p> Hello, ${userName}</p>
+<a href="/logout">Выйти</a>
 </body>
 </html>

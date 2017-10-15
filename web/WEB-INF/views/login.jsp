@@ -1,7 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="fieldset" uri="http://www.springframework.org/tags/form" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="forms" uri="http://www.springframework.org/tags/form" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -10,20 +13,23 @@
 </head>
 <body>
 
- <form:form method="POST" commandName="user" action="/login">
-     <fieldset>
-         <form:label path="login">Логин</form:label>
-         <form:input path="login"/>
-         <form:errors path="login" cssClass="error"/> <br/>
+<c:if test="${not empty error}">
+    ${error}
+</c:if>
 
-         <form:label path="password">Пароль</form:label>
-         <form:password path="password"/>
-         <form:errors path="password" cssClass="error"/>
-     </fieldset>
-     <fieldset:errors cssClass="error"/>
+<form name="login" action="/login" method="POST">
+    <label> Логин:
+        <input type="text" name="user_login" value=""/>
+    </label>
+    <label> Пароль:
+        <input type="password" name="user_password"/>
+    </label>
 
-     <footer><input type="submit" value="Войти"/></footer>
- </form:form>
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}"/>
+    <button type="submit">Войти</button>
+</form>
 
 </body>
 </html>
