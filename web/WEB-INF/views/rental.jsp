@@ -8,6 +8,7 @@
 </head>
 <body>
 <p> Hello, ${userName}</p>
+<a href="/employee/create">Создать нового сотрудника</a>
 <a href="/logout">Выйти</a>
 </body>
 </html>

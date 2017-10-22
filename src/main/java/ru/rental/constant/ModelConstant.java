@@ -5,6 +5,7 @@ package ru.rental.constant;
  */
 public final class ModelConstant {
     public static final String USER = "user";
+    public static final String EMPLOYEE = "employee";
 
     private ModelConstant() {
     }
