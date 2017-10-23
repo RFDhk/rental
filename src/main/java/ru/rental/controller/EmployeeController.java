@@ -12,13 +12,16 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.rental.constant.ModelConstant;
 import ru.rental.interfaces.EmployeeService;
 import ru.rental.model.Employee;
+import ru.rental.model.form.EmployeeTable;
 
 import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 /**
  * Created by mikhail on 16.10.2017.
  */
 @Controller
+@RequestMapping(value = "/employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -29,14 +32,14 @@ public class EmployeeController {
     }
 
 
-    @RequestMapping(value = "/employee/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
     public ModelAndView createGet(ModelAndView modelAndView) {
         modelAndView.addObject(ModelConstant.EMPLOYEE, new Employee());
         modelAndView.setViewName("/employee/create");
         return modelAndView;
     }
 
-    @RequestMapping(value = "/employee/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ModelAndView
     createPost(@Valid @ModelAttribute(ModelConstant.EMPLOYEE) Employee employee, BindingResult bindingResult, ModelAndView modelAndView,
                @RequestParam("login") String login, @RequestParam("password") String password, @RequestParam("repeatPassword") String repeatPassword) {
@@ -61,6 +64,26 @@ public class EmployeeController {
             employeeService.create(employee, login, password);
             modelAndView.setViewName("redirect:/");
         }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/")
+    public ModelAndView employeeList(ModelAndView modelAndView) {
+        EmployeeTable employeeTable = new EmployeeTable();
+        employeeTable.setEmployees(employeeService.getEmployeeList());
+        modelAndView.addObject("employeeTable", employeeTable);
+
+        modelAndView.setViewName("employee/list");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST, params = "remove")
+    public ModelAndView removeEmployees(@ModelAttribute("employeeTable") EmployeeTable employeeTable, BindingResult bindingResult, ModelAndView modelAndView) {
+        employeeTable.setEmployeeRows(employeeTable.getEmployeeRows().stream().
+                filter(row -> !row.isCheck()).collect(Collectors.toList()));
+
+        modelAndView.setViewName("redirect:/employee/");
+
         return modelAndView;
     }
 }
